@@ -1,0 +1,28 @@
+// ────────────────────────────────────────────────
+// Angular Material Theme Overrides
+// ────────────────────────────────────────────────
+
+// Override Material spinner color globally for audit progress
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: var(--color-brand-cyan);
+}
+
+// Override Material icon sizing to work as inline block
+.mat-icon {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  user-select: none;
+}
+
+// Material ripple subtlety
+.mat-mdc-button .mat-ripple,
+.mat-mdc-icon-button .mat-ripple {
+  opacity: 0.06;
+}
+
+// Remove default mat-form-field outlines when using native selects
+.mat-mdc-form-field {
+  width: 100%;
+}

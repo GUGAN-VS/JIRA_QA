@@ -1,0 +1,62 @@
+<div class="action-card">
+  <h2 class="action-card__title">Run New Audit</h2>
+
+  <div class="action-card__selectors">
+    <div class="action-card__field">
+      <label class="action-card__label">Select Projects</label>
+      <app-multi-select
+        [options]="projectOptions()"
+        [selected]="selectedProjects()"
+        placeholder="Choose one or more projects"
+        (selectedChange)="onProjectsChange($event)"
+      />
+    </div>
+
+    <!-- Sprint Selector -->
+    <div class="action-card__field">
+      <label class="action-card__label">Select Sprints (Optional)</label>
+      <div [matTooltip]="selectedProjects().length === 0 ? 'Please select at least one project to choose sprints.' : ''">
+        <app-multi-select
+          [options]="sprintOptions()"
+          [selected]="selectedSprints()"
+          [placeholder]="isLoadingSprints() ? 'Loading sprints...' : 'Choose one or more sprints (Sprints are loaded based on selected projects)'"
+          [disabled]="selectedProjects().length === 0 || isLoadingSprints()"
+          (selectedChange)="selectedSprints.set($event)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Run Audit Button -->
+  <div class="action-card__footer">
+    <button
+      class="action-card__btn"
+      [disabled]="isDisabled || isAuditing()"
+      (click)="handleRunAudit()"
+    >
+      @if (isAuditing()) {
+        <mat-spinner diameter="18" strokeWidth="2" />
+        Running Jira Quality audit...
+      } @else {
+        <mat-icon>play_arrow</mat-icon>
+        Run Audit
+      }
+    </button>
+    <p class="action-card__hint">Runs AI audit on top of Jira and generates a quality report.</p>
+  </div>
+
+  <!-- Auditing Progress -->
+  @if (isAuditing()) {
+    <div class="action-card__progress">
+      <div class="action-card__progress-inner">
+        <mat-spinner diameter="20" strokeWidth="2" class="action-card__progress-spinner" />
+        <div>
+          <p class="action-card__progress-title">Running Jira Quality audit...</p>
+          <p class="action-card__progress-desc">
+            Analyzing stories, checking acceptance criteria, and evaluating quality metrics.
+          </p>
+        </div>
+      </div>
+    </div>
+  }
+</div>

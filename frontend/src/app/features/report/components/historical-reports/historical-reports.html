@@ -1,0 +1,234 @@
+<div class="reports">
+
+  <!-- Section Header -->
+  <div class="reports__header">
+    <div>
+      <h2 class="reports__title">Browse Historical Reports</h2>
+      <p class="reports__subtitle">View past audit results and track quality trends</p>
+    </div>
+    <button class="reports__filter-btn" (click)="toggleFilters()">
+      <mat-icon>filter_list</mat-icon>
+      Filters
+      <mat-icon [class.rotated]="showFilters()">expand_more</mat-icon>
+    </button>
+  </div>
+
+  <!-- Filters Panel -->
+  @if (showFilters()) {
+    <div class="filters">
+      <div class="filters__grid">
+        
+        <div class="filters__field">
+          <label class="filters__label">Report ID</label>
+          <div class="filters__input-wrapper">
+            <app-multi-select
+              [options]="reportIds()"
+              [selected]="reportIdFilter()"
+              placeholder="Select report IDs"
+              (selectedChange)="reportIdFilter.set($event)"
+            />
+            @if (reportIdFilter().length) {
+              <button class="filters__clear-icon" (click)="reportIdFilter.set([])" aria-label="Clear report ID filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Project Name</label>
+          <div class="filters__input-wrapper">
+            <input 
+              class="filters__select" 
+              type="text" 
+              [value]="projectFilter()" 
+              (input)="projectFilter.set($any($event.target).value)" 
+              placeholder="Filter by project">
+            @if (projectFilter()) {
+              <button class="filters__clear-icon" (click)="projectFilter.set('')" aria-label="Clear project filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Sprint Name</label>
+          <div class="filters__input-wrapper">
+            <input 
+              class="filters__select" 
+              type="text" 
+              [value]="sprintFilter()" 
+              (input)="sprintFilter.set($any($event.target).value)" 
+              placeholder="Filter by sprint">
+            @if (sprintFilter()) {
+              <button class="filters__clear-icon" (click)="sprintFilter.set('')" aria-label="Clear sprint filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Run Date</label>
+          <div class="filters__input-wrapper">
+            <mat-form-field class="filters__date-field" appearance="outline">
+              <input 
+                matInput 
+                [matDatepicker]="picker" 
+                [value]="runDateFilter()"
+                (dateChange)="runDateFilter.set($event.value)"
+                placeholder="Select date">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+            @if (runDateFilter()) {
+              <button class="filters__clear-icon" (click)="runDateFilter.set(null)" aria-label="Clear date filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Story ID</label>
+          <div class="filters__input-wrapper">
+            <input 
+              class="filters__select" 
+              type="text" 
+              [value]="storyIdFilter()" 
+              (input)="storyIdFilter.set($any($event.target).value)" 
+              placeholder="Filter by story ID">
+            @if (storyIdFilter()) {
+              <button class="filters__clear-icon" (click)="storyIdFilter.set('')" aria-label="Clear story ID filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Issues Found</label>
+          <div class="filters__input-wrapper">
+            <app-multi-select
+              [options]="issueFilterOptions"
+              [selected]="issuesFoundFilter()"
+              placeholder="Select issue ranges"
+              (selectedChange)="issuesFoundFilter.set($event)"
+            />
+            @if (issuesFoundFilter().length) {
+              <button class="filters__clear-icon" (click)="issuesFoundFilter.set([])" aria-label="Clear issues filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field">
+          <label class="filters__label">Quality Score</label>
+          <div class="filters__input-wrapper">
+            <app-multi-select
+              [options]="qualityScoreOptions"
+              [selected]="qualityScoreFilter()"
+              placeholder="Select quality ranges"
+              (selectedChange)="qualityScoreFilter.set($event)"
+            />
+            @if (qualityScoreFilter().length) {
+              <button class="filters__clear-icon" (click)="qualityScoreFilter.set([])" aria-label="Clear quality score filter">
+                <mat-icon>close</mat-icon>
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="filters__field filters__field--actions">
+          <label class="filters__label">&nbsp;</label>
+          <button class="filters__clear-btn" (click)="clearFilters()">
+            <mat-icon>filter_list_off</mat-icon>
+            Clear all Filters
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- Table -->
+  <div class="table-card">
+    <div class="table-wrapper">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Report ID</th>
+            <th>Projects</th>
+            <th>Sprints</th>
+            <th>Run Date</th>
+            <th>Stories Analyzed</th>
+            <th>Issues Found</th>
+            <th>Quality Score</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (report of filteredReports(); track report.report_id) {
+            <tr class="data-table__row">
+              <td>
+                <div class="data-table__id">
+                  <mat-icon class="data-table__id-icon">description</mat-icon>
+                  <span>{{ report.report_id }}</span>
+                </div>
+              </td>
+              <td>
+                <div class="data-table__tags">
+                  @for (project of report.project_names; track project) {
+                    <span class="data-table__tag">{{ project }}</span>
+                  }
+                </div>
+              </td>
+              <td>
+                <div class="data-table__tags">
+                  @for (sprint of report.sprint_names; track sprint) {
+                    <span class="data-table__tag">{{ sprint }}</span>
+                  }
+                  @if (!report.sprint_names.length) {
+                    <span class="data-table__tag">All Sprints</span>
+                  }
+                </div>
+              </td>
+              <td>{{ report.run_date | date:'MMM d, y' }}</td>
+              <td>{{ report.stories_analyzed }}</td>
+              <td>
+                <span [ngClass]="getIssueClass(report.issues_found)" class="data-table__issues">
+                  {{ report.issues_found }}
+                </span>
+              </td>
+              <td>
+                <div class="data-table__score">
+                  <span [ngClass]="getScoreClass(report.quality_score)" class="data-table__score-value">
+                    {{ report.quality_score }}
+                  </span>
+                  <span class="data-table__score-denom">/100</span>
+                </div>
+              </td>
+              <td>
+                <button class="data-table__view-btn" (click)="viewReport(report)">
+                  View Report
+                </button>
+              </td>
+            </tr>
+          }
+          @if (filteredReports().length === 0) {
+            <tr>
+              <td colspan="8" class="data-table__empty">
+                <div class="data-table__empty-state">
+                  <mat-icon>search_off</mat-icon>
+                  <p>No reports found matching your filters</p>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

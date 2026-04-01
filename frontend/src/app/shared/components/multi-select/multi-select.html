@@ -1,0 +1,44 @@
+<div class="multi-select" [class.multi-select--disabled]="disabled">
+  <div
+    class="multi-select__trigger"
+    [class.multi-select__trigger--open]="isOpen()"
+    (click)="toggleDropdown()"
+  >
+    <div class="multi-select__tags">
+      @if (selected.length === 0) {
+        <span class="multi-select__placeholder">{{ placeholder }}</span>
+      } @else {
+        @for (item of selected; track item) {
+          <div class="multi-select__tag">
+            <span>{{ item }}</span>
+            <button class="multi-select__tag-remove" (click)="removeItem(item, $event)">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+        }
+      }
+    </div>
+    <mat-icon class="multi-select__chevron" [class.multi-select__chevron--open]="isOpen()">
+      expand_more
+    </mat-icon>
+  </div>
+
+  @if (isOpen()) {
+    <div class="multi-select__dropdown">
+      @for (option of options; track option) {
+        <div
+          class="multi-select__option"
+          [class.multi-select__option--selected]="isSelected(option)"
+          (click)="toggleOption(option)"
+        >
+          <div class="multi-select__checkbox" [class.multi-select__checkbox--checked]="isSelected(option)">
+            @if (isSelected(option)) {
+              <mat-icon>check</mat-icon>
+            }
+          </div>
+          <span>{{ option }}</span>
+        </div>
+      }
+    </div>
+  }
+</div>

@@ -1,0 +1,56 @@
+// ────────────────────────────────────────────────
+// CSS Custom Properties (Design Tokens)
+// ────────────────────────────────────────────────
+:root {
+  // Brand Colors
+  --color-brand-primary:  #181817;
+  --color-brand-yellow:   #F5C546;
+  --color-brand-cyan:     #7BCBD9;
+  --color-brand-red:      #E55455;
+
+  // Neutral
+  --color-neutral-gray:   #F7F7F7;
+
+  // Text
+  --color-heading-dark:   #1B242B;
+  --color-paragraph-dark: #676D71;
+  --color-heading-light:  #FAFAFA;
+  --color-paragraph-light: rgba(250, 250, 250, 0.8);
+
+  // Borders
+  --color-border:         rgba(0, 0, 0, 0.1);
+  --color-border-strong:  rgba(0, 0, 0, 0.2);
+  --color-border-light:   rgba(0, 0, 0, 0.05);
+
+  // Spacing
+  --spacing-xs:  4px;
+  --spacing-sm:  8px;
+  --spacing-md:  16px;
+  --spacing-lg:  24px;
+  --spacing-xl:  32px;
+  --spacing-2xl: 48px;
+
+  // Radius
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  10px;
+  --radius-xl:  14px;
+  --radius-full: 9999px;
+
+  // Shadows
+  --shadow-sm:  0 1px 4px rgba(0, 0, 0, 0.06);
+  --shadow-md:  0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-lg:  0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-xl:  0 20px 60px rgba(0, 0, 0, 0.2);
+
+  // Typography
+  --font-family-base: 'Epilogue', sans-serif;
+  --font-size-xs:   11px;
+  --font-size-sm:   12px;
+  --font-size-base: 14px;
+  --font-size-md:   16px;
+  --font-size-lg:   18px;
+  --font-size-xl:   20px;
+  --font-size-2xl:  24px;
+  --font-size-3xl:  30px;
+}

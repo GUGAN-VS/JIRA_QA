@@ -1,0 +1,112 @@
+.action-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+  padding: 32px;
+  margin-bottom: 40px;
+
+  &__title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-heading-dark);
+    margin: 0 0 24px;
+  }
+
+  &__selectors {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-heading-dark);
+  }
+
+  &__footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--color-brand-primary);
+    color: var(--color-heading-light);
+    border: none;
+    border-radius: 8px;
+    padding: 12px 28px;
+    font-size: 14px;
+    font-weight: 600;
+    width: fit-content;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+
+    mat-spinner {
+      --mdc-circular-progress-active-indicator-color: white;
+    }
+
+    &:hover:not(:disabled) {
+      opacity: 0.88;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+  }
+
+  &__hint {
+    font-size: 13px;
+    color: var(--color-paragraph-dark);
+    margin: 0;
+  }
+
+  &__progress {
+    margin-top: 20px;
+    background: rgba(123, 203, 217, 0.1);
+    border: 1px solid rgba(123, 203, 217, 0.25);
+    border-radius: 8px;
+    padding: 16px;
+
+    &-inner {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    &-spinner {
+      --mdc-circular-progress-active-indicator-color: var(--color-brand-cyan);
+      flex-shrink: 0;
+    }
+
+    &-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--color-heading-dark);
+      margin: 0 0 4px;
+    }
+
+    &-desc {
+      font-size: 13px;
+      color: var(--color-paragraph-dark);
+      margin: 0;
+    }
+  }
+}

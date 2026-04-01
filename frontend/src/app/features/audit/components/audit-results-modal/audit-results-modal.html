@@ -1,0 +1,168 @@
+@if (report()) {
+  <div class="modal-backdrop" (click)="close()">
+    <div class="modal" (click)="$event.stopPropagation()">
+
+      <div class="modal__header">
+        <div class="modal__header-left">
+          <mat-icon class="modal__header-icon">check_circle</mat-icon>
+          <div>
+            <h2 class="modal__title">
+              Audit Complete
+              @if (report()!.report_id) {
+                <span> – {{ report()!.report_id }}</span>
+              }
+            </h2>
+            <p class="modal__subtitle">
+              @if (report()!.run_date) {
+                Analysis completed on {{ report()!.run_date | date:'mediumDate' }}
+              } @else {
+                Analysis completed
+              }
+            </p>
+          </div>
+        </div>
+        <button class="modal__close" (click)="close()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+
+      <div class="modal__body">
+        @if (!report()!.stories_analyzed || report()!.stories_analyzed === 0 || !report()!.report?.stories || report()!.report?.stories?.length === 0) {
+          <div class="empty-state">
+            <mat-icon class="empty-state__icon">inbox</mat-icon>
+            <h3 class="empty-state__title">No Stories Found</h3>
+            <p class="empty-state__message">
+              @if (report()!.project_names && report()!.project_names.length > 0) {
+                There are no stories in the selected {{ report()!.project_names.length > 1 ? 'projects' : 'project' }} 
+                ({{ report()!.project_names.join(', ') }}).
+              } @else if (report()!.sprint_names && report()!.sprint_names.length > 0) {
+                There are no stories in the selected {{ report()!.sprint_names.length > 1 ? 'sprints' : 'sprint' }} 
+                ({{ report()!.sprint_names.join(', ') }}).
+              } @else {
+                No stories were found to analyze in this audit.
+              }
+            </p>
+            <p class="empty-state__hint">
+              Please verify that the project or sprint contains stories and try again.
+            </p>
+          </div>
+        } @else {
+          <div class="score-card">
+            <div class="score-card__left">
+              <h3 class="score-card__label">Overall Quality Score</h3>
+              <div class="score-card__score-row">
+                <span class="score-card__number">{{ report()!.quality_score || 0 }}</span>
+                <span class="score-card__denom">/100</span>
+                <span class="score-card__badge" [ngClass]="getHealth(report()!.quality_score || 0).colorClass">
+                  {{ report()!.overall_health || getHealth(report()!.quality_score || 0).label }}
+                </span>
+              </div>
+              <p class="score-card__meta">
+                Based on {{ report()!.stories_analyzed || 0 }} stories
+                @if (report()!.project_names && report()!.project_names.length > 0) {
+                  <span> across {{ report()!.project_names.length }} project{{ report()!.project_names.length > 1 ? 's' : '' }}</span>
+                }
+              </p>
+            </div>
+            <div class="score-card__icon">
+              <mat-icon>trending_up</mat-icon>
+            </div>
+          </div>
+
+          <div class="insights-card">
+            <div class="insights-card__header">
+              <mat-icon>psychology</mat-icon>
+              <h3>AI Insights</h3>
+            </div>
+            <ul class="insights-card__list">
+              <li>{{ report()!.issues_found || 0 }} total issues detected across analyzed stories.</li>
+              <li>{{ report()!.report?.sprint_summary?.sprint_ready || 0 }} stories are Sprint Ready.</li>
+              <li>{{ report()!.report?.sprint_summary?.needs_work || 0 }} stories need work.</li>
+              <li>Current quality score of <strong>{{ report()!.quality_score || 0 }}/100</strong> indicates <strong>{{ report()!.report?.sprint_summary?.overall_health?.toLowerCase() || 'unknown' }}</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="summary-grid">
+            <div class="summary-card">
+              <mat-icon class="summary-card__icon summary-card__icon--cyan">check_circle</mat-icon>
+              <div>
+                <div class="summary-card__value">{{ report()!.report?.sprint_summary?.sprint_ready || 0 }}</div>
+                <div class="summary-card__label">Sprint Ready</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <mat-icon class="summary-card__icon summary-card__icon--yellow">warning</mat-icon>
+              <div>
+                <div class="summary-card__value">{{ report()!.report?.sprint_summary?.needs_work || 0 }}</div>
+                <div class="summary-card__label">Needs Work</div>
+              </div>
+            </div>
+            <div class="summary-card">
+              <mat-icon class="summary-card__icon summary-card__icon--red">error_outline</mat-icon>
+              <div>
+                <div class="summary-card__value">{{ report()!.report?.sprint_summary?.not_ready || 0 }}</div>
+                <div class="summary-card__label">Not Ready</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="issues-section">
+            <h3 class="issues-section__title">Analyzed Stories & Recommendations</h3>
+
+            @if (!report()!.report?.stories?.length) {
+              <div class="issues-section__empty">
+                <mat-icon>check_circle</mat-icon>
+                <p>No story data found.</p>
+              </div>
+            } @else {
+              <div class="story-list">
+                @for (story of report()!.report!.stories; track story.key) {
+                  <div class="story-item">
+                    <div class="story-item__header">
+                      <span class="story-item__id">{{ story.key || 'N/A' }}</span>
+                      <span class="story-item__priority" 
+                            [style.background]="getScoreColor(story.overall_score || 0)">
+                        {{ story.readiness || 'Unknown' }} ({{ story.overall_score || 0 }}/10)
+                      </span>
+                    </div>
+                    <h4 class="story-item__title">{{ story.summary || 'No summary available' }}</h4>
+                    
+                    @if (story.issues && story.issues.length) {
+                      <ul class="story-item__issues">
+                        @for (issue of story.issues; track $index) {
+                          <li>
+                            <span class="story-item__dot"></span>
+                            <span>{{ issue }}</span>
+                          </li>
+                        }
+                      </ul>
+                    }
+
+                    @if (story.suggestions && story.suggestions.length) {
+                      <div class="story-item__suggestions">
+                        <strong class="story-item__suggestions-title">Suggestions to improve:</strong>
+                        <ul class="story-item__suggestions-list">
+                          @for (suggestion of story.suggestions; track $index) {
+                            <li>
+                              <mat-icon>arrow_right</mat-icon>
+                              <span>{{ suggestion }}</span>
+                            </li>
+                          }
+                        </ul>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="modal__footer">
+        <button class="modal__btn modal__btn--secondary" (click)="close()">Close</button>
+      </div>
+
+    </div>
+  </div>
+}
